@@ -25,6 +25,7 @@ space_cases = [('Story', 'Work'),
                ]
 
 bold_word = FormattedText('bold', color='#000000', size=42, bold=True)
+bold_upper_word = FormattedText('Bold', color='#000000', size=42, bold=True)
 bold_word_sp = FormattedText('bold ', color='#000000', size=42, bold=True)
 italic_word = FormattedText('italic', color='#000000', size=42, italic=True)
 plain_word = FormattedText('plain', color='#000000', size=42)
@@ -34,7 +35,7 @@ special_no_space_cases = [(bold_word_sp, plain_word),
 
 special_space_cases = [(bold_word, plain_word),
                        (bold_word, italic_word),
-                       (bold_word, bold_word),
+                       (bold_word, bold_upper_word),
                        (plain_word, bold_word),
                        (italic_word, plain_word),
                        ]

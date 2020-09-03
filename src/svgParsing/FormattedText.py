@@ -23,16 +23,6 @@ def traverse_element_tree(root_element):
         yield from traverse_element_tree(child)
 
 
-def print_children(element, depth):
-    '''For preorder traversal of an ElementTree, print the tag of each node,
-    using indentation for depth.'''
-    if parse_svg_tag(element) == 'tspan':
-        print(element.text)
-    print(' '*2*depth, parse_svg_tag(element))
-    for child in element:
-        print_children(child, depth+1)
-
-
 def svg_to_text(filename):
     '''Given an SVG filename representing a page of the 5e SRD, return a list
     of objects with text from the file.
@@ -206,23 +196,62 @@ class FormattedText:
         # lowercase letter (and no newline) and the next starts with an
         # uppercase letter.
         if self.text == '' or other_element.text == '':
-            new_text = self.text + other_element.text
-        else:
-            end_of_first_text_is_alpha = (self.text[-1].isalpha() or
-                                          self.text[-1] == '-')
-            start_of_next_text_is_lowercase = (
-                (other_element.text[0].isalpha() and
-                 other_element.text[0].islower()) or
-                other_element.text[0] == '-')
-            if end_of_first_text_is_alpha and start_of_next_text_is_lowercase:
-                new_text = self.text + other_element.text
-            elif self.text[-1] == ' ' or other_element.text[0] == ' ':
-                new_text = self.text + other_element.text
-            elif self.text[-1] == '-' and other_element.text[0].isalpha():
-                new_text = self.text + other_element.text
+            # If a bold/italic phrase is merged with an empty text string, then
+            # the bold/italic formatting should be kept, so that space will be
+            # added before the following word.
+            return FormattedText(self.text + other_element.text,
+                                 self.color,
+                                 self.size,
+                                 (self.bold or other_element.bold),
+                                 (self.italic or other_element.italic))
+
+        use_space = False
+
+        first_tail = self.text[-1]
+        second_head = other_element.text[0]
+        use_bold = False
+        use_italic = False
+
+        either_side_false = [' ', '-', '\n', '\t']
+
+        if (first_tail in either_side_false + ['('] or
+                second_head in either_side_false + [')', '.']):
+            use_space = False
+
+        elif (self.bold != other_element.bold or
+                self.italic != other_element.italic):
+            # When a non-bold phrase has a bold phrase merged onto the end, the
+            # merged phrase needs to be marked as bold so that the subsequent
+            # phrase will get a space before it.
+            use_space = True
+            use_bold = other_element.bold
+            use_italic = other_element.italic
+
+        elif first_tail.isalpha() and second_head.isalpha():
+            if first_tail.islower() and second_head.isupper():
+                use_space = True
+            elif (len(self.text) >= 2 and self.text[-2].isupper() and
+                    first_tail.isupper()):
+                use_space = True
             else:
-                new_text = self.text + ' ' + other_element.text
-        return FormattedText(new_text, self.color, self.size, False, False)
+                use_space = False
+
+        elif first_tail in ['.', ':']:
+            use_space = True
+
+        else:
+            use_space = True
+
+        if use_space:
+            new_text = self.text + ' ' + other_element.text
+        else:
+            new_text = self.text + other_element.text
+
+        return FormattedText(new_text,
+                             self.color,
+                             self.size,
+                             use_bold,
+                             use_italic)
 
     @staticmethod
     def fix_text(text):
