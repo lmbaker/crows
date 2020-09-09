@@ -1,7 +1,7 @@
 from functools import partial
 import pytest
 
-from formatted_text import FormattedText
+from svgParsing.formatted_text import FormattedText
 
 no_space_cases = [('T', 'winned'),
                   ('Half', '-'),

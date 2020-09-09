@@ -3,11 +3,11 @@ import re
 import xml.etree.ElementTree as ET
 from nltk import download as nltk_download
 from nltk.corpus import words as nltk_words
+from svgParsing.config import svg_directory
 
 nltk_download('words')
 
 xml_namespace = {'svg': '{http://www.w3.org/2000/svg}'}
-svg_directory = '/home/lauren/svg'
 
 nltk_words_set = set(nltk_words.words())
 
