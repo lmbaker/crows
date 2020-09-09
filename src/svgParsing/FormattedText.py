@@ -1,10 +1,20 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+from nltk import download as nltk_download
+from nltk.corpus import words as nltk_words
+
+nltk_download('words')
 
 xml_namespace = {'svg': '{http://www.w3.org/2000/svg}'}
 svg_directory = '/home/lauren/svg'
 
+nltk_words_set = set(nltk_words.words())
+
+def is_english_word(string):
+    if len(string) == 1 and string not in ['a', 'i']:
+        return False
+    return string.lower() in nltk_words_set
 
 def parse_svg_tag(element):
     '''Elements from SVG files have tags that look like
@@ -234,7 +244,25 @@ class FormattedText:
                     first_tail.isupper()):
                 use_space = True
             else:
-                use_space = False
+                # If the combined 'word' across the two pieces of text is in a
+                # standard English dictionary, then let them be combined.
+                last_word_of_self = self.text.split(' ')[-1]
+                first_word_of_other = other_element.text.split(' ')[0]
+
+                if not first_word_of_other[-1].isalpha():
+                    # If the second piece of text ends in punctuation, remove
+                    # that character.
+                    first_word_of_other = first_word_of_other[:-1]
+
+                if (is_english_word(last_word_of_self + first_word_of_other) or
+                    not is_english_word(last_word_of_self) or
+                    not is_english_word(first_word_of_other)):
+                    print('<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
+                    use_space = False
+                else:
+                    space_string = ' '*30
+                    print(space_string + '<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
+                    use_space = True
 
         elif first_tail in ['.', ':']:
             use_space = True
