@@ -257,11 +257,13 @@ class FormattedText:
                 if (is_english_word(last_word_of_self + first_word_of_other) or
                     not is_english_word(last_word_of_self) or
                     not is_english_word(first_word_of_other)):
-                    print('<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
+                    # Useful for checking the behavior of ntlk for word
+                    # splitting.
+                    #print('<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
                     use_space = False
                 else:
                     space_string = ' '*30
-                    print(space_string + '<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
+                    #print(space_string + '<{:15}|{:15}>'.format(last_word_of_self, first_word_of_other))
                     use_space = True
 
         elif first_tail in ['.', ':']:

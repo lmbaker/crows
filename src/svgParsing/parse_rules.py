@@ -1,5 +1,5 @@
-from FormattedText import merge_pages, svg_to_text
-from TableNames import tables_to_remove
+from formatted_text import merge_pages, svg_to_text
+from table_names import tables_to_remove
 
 # A script to parse the rules from SVG files (one per page).
 
@@ -33,6 +33,8 @@ for formatted_text in merged_content:
 
 articles[current_title] = current_article
 
+# Print the extracted rules
+'''
 for title, text in articles.items():
     print(title)
     print('------------')
@@ -40,3 +42,4 @@ for title, text in articles.items():
     print()
     print('============================================')
     print()
+'''
