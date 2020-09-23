@@ -1,4 +1,7 @@
 from flask import Flask, request
+
+from questionAnswering.SrdResponder import SrdResponder
+
 app = Flask(__name__)
 
 # To start the server:
@@ -13,9 +16,10 @@ app = Flask(__name__)
 # --header 'Content-Type: application/json' \
 # --data-raw '{"question": "How tall is a halfling?"}'
 
+srdResponder = SrdResponder()
 
 def answer_question(question_text):
-    return 'not done yet'
+    return srdResponder.top_answer_in_context(question_text)
 
 
 quick_template = '''Question: {}</br>
