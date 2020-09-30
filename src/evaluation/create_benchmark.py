@@ -1,6 +1,8 @@
 import os
 import json
 
+from evaluation.config import data_filepath
+
 def convert_txt_to_squad_json(documents_dir, filename):
     '''Read an article given as a .txt file, and create a SQuAD json file,
     with no questions added yet. A .json file is created in the same
@@ -194,7 +196,7 @@ def combine_squad_files(file1, file2):
         else:
             file1['data'].append(article)
 
-documents_dir = '../../data/documents-dd2e8b2'
+documents_dir = data_filepath
 
 '''
 for filename in ['races.txt', 'barbarian.txt', 'bard.txt', 'cleric.txt']:
@@ -351,6 +353,13 @@ add_question("What are the effects of the Frightened condition on a creature?", 
 para, article_title = find_sentence("• An unconscious creature is incapacitated (see the condition), can’t move or speak, and is unaware of its surroundings", starting_squad_data, article_title='')
 add_question("Do you have advantage on attacks if the target is unconscious?", [{'answer_start': 255, 'answer_text': "Attack rolls against the creature have advantage"}], para, article_title)
 
-non_overwrite_filename = fix_filename(documents_dir, 'benchmark.json')
-with open(os.path.join(documents_dir, non_overwrite_filename), 'w') as f:
-    json.dump(starting_squad_data, f)
+
+if __name__ == '__main__':
+    non_overwrite_filename = fix_filename(documents_dir, 'benchmark.json')
+    non_overwrite_filepath = os.path.join(documents_dir, non_overwrite_filename)
+    with open(non_overwrite_filepath, 'w') as f:
+        json.dump(starting_squad_data, f)
+
+    print("Benchmark written to '{}'.".format(non_overwrite_filepath))
+
+
