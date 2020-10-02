@@ -221,7 +221,7 @@ add_question("", [{'answer_start': , 'answer_text': ""}], para, article_title)
 convert_articles_json_to_squad_json(documents_dir, 'srd_articles.json')
 starting_squad_data = json_from_filename(documents_dir, 'srd_articles_squad')
 
-file_title = 'Races'
+file_title = ''
 para, article_title = find_sentence('Dwarven Resilience. You have advantage on saving throws against poison, and you have resistance against poison damage', starting_squad_data, article_title=file_title)
 add_question('What weapons can dwarves use?', [{'answer_start': 1181, 'answer_text': 'battleaxe, handaxe, light hammer, and warhammer'}], para, article_title)
 add_question('At what age are dwarves thought of as adults?', [{'answer_start': 264, 'answer_text': '50'}], para, article_title)
@@ -293,11 +293,11 @@ add_question("What radius of bright light is provided by a torch?", [{'answer_st
 para, article_title = find_sentence("A creature moving across the covered area must succeed on a DC 10 Dexterity saving throw or fall prone.", starting_squad_data, article_title='Equipment')
 add_question("What is the effect of walking on ball bearings?", [{'answer_start': 1473, 'answer_text': "succeed on a DC 10 Dexterity saving throw or fall prone"}], para, article_title)
 
-para, article_title = find_sentence(" You can push, drag, or lift a weight in pounds up to twice your carrying capacity (or 30 times your Strength score).", starting_squad_data, article_title='Using Ability Scores')
+para, article_title = find_sentence(" You can push, drag, or lift a weight in pounds up to twice your carrying capacity (or 30 times your Strength score).", starting_squad_data, article_title='')
 add_question("How much weight can a character lift?", [{'answer_start': 386, 'answer_text': "weight in pounds up to twice your carrying capacity"},
                                                       {'answer_start': 386, 'answer_text': "weight in pounds up to twice your carrying capacity (or 30 times your Strength score)"}], para, article_title)
 
-para, article_title = find_sentence("In a lightly obscuredarea, such as dim light, patchy fog, or moderate foliage, creatures have disadvantage on Wisdom (Perception) checks that rely on sight.", starting_squad_data, article_title='Using Ability Scores')
+para, article_title = find_sentence("In a lightly obscuredarea, such as dim light, patchy fog, or moderate foliage, creatures have disadvantage on Wisdom (Perception) checks that rely on sight.", starting_squad_data, article_title='')
 add_question("What is the effect of lightly obscured terrain?", [{'answer_start': 430, 'answer_text': "disadvantage on Wisdom (Perception) checks that rely on sight"}], para, article_title)
 
 para, article_title = find_sentence("A character can’t benefit from more than one long rest in a 24-hour period, and a character must have at least 1 hit point at the start of the rest to gain its benefits.", starting_squad_data, article_title='')
