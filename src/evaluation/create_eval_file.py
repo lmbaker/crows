@@ -30,7 +30,7 @@ API_ENDPOINT = 'http://127.0.0.1:5000/json-question'
 
 start_time = time()
 
-for question_pair in question_id_pairs[0:2]:
+for question_pair in question_id_pairs:
     data = {'question': question_pair[0]}
     r = requests.post(url = API_ENDPOINT, json = data)
 

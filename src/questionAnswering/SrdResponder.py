@@ -1,5 +1,5 @@
 from haystack import Finder
-from haystack.database.elasticsearch import ElasticsearchDocumentStore
+from haystack.document_store.elasticsearch import ElasticsearchDocumentStore
 from haystack.reader.farm import FARMReader
 from haystack.retriever.sparse import ElasticsearchRetriever
 import json
