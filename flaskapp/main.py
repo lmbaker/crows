@@ -12,14 +12,24 @@ app = Flask(__name__)
 
 # Visit http://127.0.0.1:5000/form-question to enter a question on-screen.
 # Send a query to json-question, like this:
-# curl --location --request POST 'http://127.0.0.1:5000/json-question' \
-# --header 'Content-Type: application/json' \
-# --data-raw '{"question": "How tall is a halfling?"}'
+'''
+curl --location --request POST 'http://127.0.0.1:5000/json-question' \
+--header 'Content-Type: application/json' \
+--data-raw '{"question": "How tall is a halfling?"}'
+
+or, curl --location --request POST 'http://127.0.0.1:5000/json-all-answers
+'''
 
 srdResponder = SrdResponder()
 
-def answer_question(question_text):
-    return srdResponder.top_answer_in_context(question_text)
+
+def answer_question(question_text, answer_type='top_answer'):
+    if answer_type == 'all_answers':
+        return srdResponder.answers_with_metadata(question_text)
+    elif answer_type == 'top_answer':
+        return srdResponder.top_answer_in_context(question_text)
+    else:
+        raise ValueError("Unrecognized answer_type '{}'.".format(answer_type))
 
 
 quick_template = '''Question: {}</br>
@@ -55,3 +65,13 @@ def json_example():
 
     return {'question': question,
             'answer': answer}
+
+
+@app.route('/json-all-answers', methods=['POST'])
+def json_all_answers():
+    request_data = request.get_json()
+
+    question = request_data['question']
+    answer = answer_question(question, answer_type = 'all_answers')
+
+    return answer

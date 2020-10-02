@@ -7,50 +7,59 @@ from evaluation.config import benchmark_filename
 from evaluation.config import data_filepath
 from evaluation.create_benchmark import fix_filename
 
-# From the path to and name of the json file holding a SQuAD dataset,
-# create a list of (question, question-id) tuples.
-# List[Tuple[str, int]]
+def get_questions_from_squad(benchmark_filepath):
+    '''From the path to and name of the json file holding a SQuAD dataset,
+    create a list of (question, question-id) tuples.
 
-with open(os.path.join(data_filepath, benchmark_filename)) as f:
-    squad_benchmark = json.load(f)
+    benchmark_filepath: str A filepath to the SQuAD benchmark file.
+    return: List[Tuple[str, int]]
+    '''
 
-question_id_pairs = []
-for article in squad_benchmark['data']:
-    for para in article['paragraphs']:
-        for qas in para['qas']:
-            question_id_pairs.append((qas['question'], qas['id']))
+    with open(benchmark_filepath) as f:
+        squad_benchmark = json.load(f)
 
-# curl --location --request POST  \
-# --header 'Content-Type: application/json' \
-# --data-raw '{"question": "How tall is a halfling?"}'
+    question_id_pairs = []
+    for article in squad_benchmark['data']:
+        for para in article['paragraphs']:
+            for qas in para['qas']:
+                question_id_pairs.append((qas['question'], qas['id']))
+    return question_id_pairs
 
-predictions_dict = {}
+def main():
 
-API_ENDPOINT = 'http://127.0.0.1:5000/json-question'
+    question_id_pairs = get_questions_from_squad(
+        os.path.join(data_filepath, benchmark_filename))
 
-start_time = time()
+    # curl --location --request POST  \
+    # --header 'Content-Type: application/json' \
+    # --data-raw '{"question": "How tall is a halfling?"}'
 
-for question_pair in question_id_pairs:
-    data = {'question': question_pair[0]}
-    r = requests.post(url = API_ENDPOINT, json = data)
+    predictions_dict = {}
 
-    # Get the response JSON, and take the answer (bolded) out of the context.
-    ans = r.json()['answer']
-    ans = ans.split('<b>')[1].split('</b>')[0]
+    API_ENDPOINT = 'http://127.0.0.1:5000/json-all-answers'
 
-    predictions_dict[question_pair[1]] = ans
+    start_time = time()
 
-duration = time() - start_time
+    for question_pair in question_id_pairs:
+        data = {'question': question_pair[0]}
+        r = requests.post(url = API_ENDPOINT, json = data)
+        ans = r.json()
+        predictions_dict[question_pair[1]] = ans
 
-timing_msg = ('Answering benchmark questions took {:.2f} seconds, '
-              'or {:.2f} hours.')
-print(timing_msg.format(duration, duration/3600))
+    duration = time() - start_time
 
-predictions_filename = os.path.join(data_filepath,
-                                    fix_filename(data_filepath,
-                                                 'benchmark_predictions.json'))
+    timing_msg = ('Answering benchmark questions took {:.2f} seconds, '
+                  'or {:.2f} hours.')
+    print(timing_msg.format(duration, duration/3600))
 
-with open(predictions_filename, 'w') as f:
-    json.dump(predictions_dict, f)
+    predictions_filename = os.path.join(data_filepath,
+                                        fix_filename(data_filepath,
+                                                     'benchmark_predictions.json'))
 
-print("Benchmark answers written to: '{}'".format(predictions_filename))
+    with open(predictions_filename, 'w') as f:
+        json.dump(predictions_dict, f)
+
+    print("Benchmark answers written to: '{}'".format(predictions_filename))
+
+if __name__ == '__main__':
+    main()

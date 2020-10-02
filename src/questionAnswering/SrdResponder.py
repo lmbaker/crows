@@ -36,6 +36,18 @@ class SrdResponder:
 
         self.finder = Finder(reader, retriever)
 
+    def _make_prediction(question):
+        '''A helper function to call the finder and return answers.
+
+        question: str A question, plaintext.
+        return: A dictionary with answers and metadata.
+        '''
+
+        return self.finder.get_answers(question=question,
+                                       top_k_retriever=10,
+                                       top_k_reader=5)
+
+
     def top_answer_in_context(self, question):
         '''Return the most likely answer for the given question. Return the
         context, but put the answer in bold.
@@ -44,11 +56,20 @@ class SrdResponder:
         return: str representing the answer.
         '''
 
-        prediction = self.finder.get_answers(question=question,
-                                             top_k_retriever=10,
-                                             top_k_reader=5)
+        prediction = self._make_prediction(question)
         top_answer_dict = prediction['answers'][0]
         top_answer_text = top_answer_dict['answer']
         top_answer_context = top_answer_dict['context']
 
         return make_substring_bold(top_answer_context, top_answer_text)
+
+    def answers_with_metadata(question):
+        '''Return all answer candidates, with metadata, as provided by the
+        finder.
+
+        question: str A question, plaintext.
+        return: Dict The answer structure as returned by the finder.
+        '''
+
+        prediction = self._make_prediction(question)
+        return prediction
