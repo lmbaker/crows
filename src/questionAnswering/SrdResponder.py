@@ -36,7 +36,7 @@ class SrdResponder:
 
         self.finder = Finder(reader, retriever)
 
-    def _make_prediction(question):
+    def _make_prediction(self, question):
         '''A helper function to call the finder and return answers.
 
         question: str A question, plaintext.
@@ -63,7 +63,7 @@ class SrdResponder:
 
         return make_substring_bold(top_answer_context, top_answer_text)
 
-    def answers_with_metadata(question):
+    def answers_with_metadata(self, question):
         '''Return all answer candidates, with metadata, as provided by the
         finder.
 
