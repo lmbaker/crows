@@ -71,3 +71,17 @@ def test_merge_special_no_space(form_text_1, form_text_2):
 def test_merge_special_space(form_text_1, form_text_2):
     expected = form_text_1.text + ' ' + form_text_2.text
     assert form_text_1.merge(form_text_2).text == expected
+
+# Test a case where a plain word has an italic word merged onto it, and then
+# another plain word is added.
+def test_italics_triple_case():
+    expected = ' '.join([plain_word.text, italic_word.text, plain_word.text])
+    first_merge = plain_word.merge(italic_word)
+    second_merge = first_merge.merge(plain_word)
+    assert second_merge.text == expected
+
+def test_bold_triple_case():
+    expected = ' '.join([plain_word.text, bold_word.text, plain_word.text])
+    first_merge = plain_word.merge(bold_word)
+    second_merge = first_merge.merge(plain_word)
+    assert second_merge.text == expected
