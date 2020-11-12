@@ -22,6 +22,7 @@ class SrdResponder:
                                                     password="",
                                                     index="document")
 
+        print("Importing documents from '{}'.".format(generated_srd_filepath))
         # Get documents with knowledge
 
         with open(generated_srd_filepath) as f:
