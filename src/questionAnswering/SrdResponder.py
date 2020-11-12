@@ -4,6 +4,7 @@ from haystack.reader.farm import FARMReader
 from haystack.retriever.sparse import ElasticsearchRetriever
 import json
 
+from prediction.prediction_format import PredictionOutput
 from questionAnswering.config import generated_srd_filepath
 from questionAnswering.utils import make_substring_bold
 
@@ -47,8 +48,7 @@ class SrdResponder:
                                        top_k_retriever=10,
                                        top_k_reader=5)
 
-
-    def top_answer_in_context(self, question):
+    def top_answer_in_context(self, question: str) -> str:
         '''Return the most likely answer for the given question. Return the
         context, but put the answer in bold.
 
@@ -73,3 +73,9 @@ class SrdResponder:
 
         prediction = self._make_prediction(question)
         return prediction
+
+    def full_prediction_output(self, question: str) -> PredictionOutput:
+        '''Return all output from the finder.'''
+
+        prediction = self._make_prediction(question)
+        return PredictionOutput(**prediction)

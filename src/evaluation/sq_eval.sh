@@ -7,4 +7,4 @@ fi
 
 DOCUMENTS_DIR=$1
 
-python squad_eval.py -v ${DOCUMENTS_DIR}/benchmark.json ${DOCUMENTS_DIR}/benchmark_predictions.json -o ${DOCUMENTS_DIR}/squad_eval_metrics.json -p ${DOCUMENTS_DIR}
+python squad_eval.py -v ${DOCUMENTS_DIR}/benchmark.json ${DOCUMENTS_DIR}/benchmark_predictions1.json -o ${DOCUMENTS_DIR}/squad_eval_metrics.json -p ${DOCUMENTS_DIR}

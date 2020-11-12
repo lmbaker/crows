@@ -2,6 +2,7 @@ import json
 import os
 import requests
 from time import time
+from tqdm import tqdm
 
 from evaluation.config import benchmark_filename
 from evaluation.config import data_filepath
@@ -30,17 +31,19 @@ def main():
     question_id_pairs = get_questions_from_squad(
         os.path.join(data_filepath, benchmark_filename))
 
+
     # curl --location --request POST  \
     # --header 'Content-Type: application/json' \
     # --data-raw '{"question": "How tall is a halfling?"}'
 
     predictions_dict = {}
 
-    API_ENDPOINT = 'http://127.0.0.1:5000/json-all-answers'
+    API_ENDPOINT = 'http://127.0.0.1:5000/answer-with-metadata'
+    #API_ENDPOINT = 'http://127.0.0.1:5000/json-all-answers'
 
     start_time = time()
 
-    for question_pair in question_id_pairs:
+    for question_pair in tqdm(question_id_pairs):
         data = {'question': question_pair[0]}
         r = requests.post(url = API_ENDPOINT, json = data)
         ans = r.json()

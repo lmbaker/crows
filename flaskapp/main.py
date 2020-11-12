@@ -31,6 +31,9 @@ def answer_question(question_text, answer_type='top_answer'):
     else:
         raise ValueError("Unrecognized answer_type '{}'.".format(answer_type))
 
+def answer_question_with_metadata(question_text):
+    return srdResponder.full_prediction_output(question_text)
+
 
 quick_template = '''Question: {}</br>
                   Answers:</br>{}'''
@@ -66,7 +69,6 @@ def json_example():
     return {'question': question,
             'answer': answer}
 
-
 @app.route('/json-all-answers', methods=['POST'])
 def json_all_answers():
     request_data = request.get_json()
@@ -75,3 +77,12 @@ def json_all_answers():
     answer = answer_question(question, answer_type = 'all_answers')
 
     return answer
+
+@app.route('/answer-with-metadata', methods=['POST'])
+def answer_with_metadata():
+    request_data = request.get_json()
+
+    question = request_data['question']
+    answer = answer_question_with_metadata(question)
+
+    return answer.as_dict()
