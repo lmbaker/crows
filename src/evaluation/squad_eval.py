@@ -95,13 +95,22 @@ def get_raw_scores(dataset, preds):
         if qid not in preds:
           print('Missing prediction for %s' % qid)
           continue
-        a_pred = PredictionOutput(**preds[qid]).answers[0].get_answer()
-        # Take max over all gold answers
-        exact_scores[qid] = max(compute_exact(a, a_pred) for a in gold_answers)
-        f1_scores[qid] = max(compute_f1(a, a_pred) for a in gold_answers)
+        exact_score_per_candidate = []
+        f1_score_per_candidate = []
+        for ans_index in range(5):
+          a_pred = PredictionOutput(**preds[qid]).answers[ans_index].get_answer()
+          # Take max over all gold answers
+          candidate_score = max(compute_exact(a, a_pred) for a in gold_answers)
+          candidate_f1 = max(compute_f1(a, a_pred) for a in gold_answers)
+          exact_score_per_candidate.append(candidate_score)
+          f1_score_per_candidate.append(candidate_f1)
+        exact_scores[qid] = (exact_score_per_candidate[0], max(exact_score_per_candidate))
+        f1_scores[qid] = (f1_score_per_candidate[0], max(f1_score_per_candidate))
   return exact_scores, f1_scores
 
 def apply_no_ans_threshold(scores, na_probs, qid_to_has_ans, na_prob_thresh):
+  #TODO This function has not been changed since scores was changed to hold
+  # top-5 metrics.
   new_scores = {}
   for qid, s in scores.items():
     pred_na = na_probs[qid] > na_prob_thresh
@@ -115,15 +124,19 @@ def make_eval_dict(exact_scores, f1_scores, qid_list=None):
   if not qid_list:
     total = len(exact_scores)
     return collections.OrderedDict([
-        ('exact', 100.0 * sum(exact_scores.values()) / total),
-        ('f1', 100.0 * sum(f1_scores.values()) / total),
+        ('exact', 100.0 * sum([v[0] for v in exact_scores.values()]) / total),
+        ('exact_top5', 100.0 * sum([v[1] for v in exact_scores.values()]) / total),
+        ('f1', 100.0 * sum([v[0] for v in f1_scores.values()]) / total),
+        ('f1_top5', 100.0 * sum([v[1] for v in f1_scores.values()]) / total),
         ('total', total),
     ])
   else:
     total = len(qid_list)
     return collections.OrderedDict([
-        ('exact', 100.0 * sum(exact_scores[k] for k in qid_list) / total),
-        ('f1', 100.0 * sum(f1_scores[k] for k in qid_list) / total),
+        ('exact', 100.0 * sum(exact_scores[k][0] for k in qid_list) / total),
+        ('exact_top5', 100.0 * sum(exact_scores[k][1] for k in qid_list) / total),
+        ('f1', 100.0 * sum(f1_scores[k][0] for k in qid_list) / total),
+        ('f1_top5', 100.0 * sum(f1_scores[k][1] for k in qid_list) / total),
         ('total', total),
     ])
 

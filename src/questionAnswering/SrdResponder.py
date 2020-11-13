@@ -5,7 +5,7 @@ from haystack.retriever.sparse import ElasticsearchRetriever
 import json
 
 from prediction.prediction_format import PredictionOutput
-from questionAnswering.config import generated_srd_filepath
+from questionAnswering.config import generated_srd_filepath, model_name_or_path
 from questionAnswering.utils import make_substring_bold
 
 
@@ -33,8 +33,9 @@ class SrdResponder:
 
         retriever = ElasticsearchRetriever(document_store=document_store)
 
-        reader = FARMReader(model_name_or_path="deepset/roberta-base-squad2",
+        reader = FARMReader(model_name_or_path=model_name_or_path,
                             use_gpu=True)
+
 
         self.finder = Finder(reader, retriever)
 
