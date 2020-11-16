@@ -23,11 +23,13 @@ or, curl --location --request POST 'http://127.0.0.1:5000/json-all-answers
 srdResponder = SrdResponder()
 
 
-def answer_question(question_text, answer_type='top_answer'):
+def answer_question(question_text, answer_type='top_5_answer'):
     if answer_type == 'all_answers':
         return srdResponder.answers_with_metadata(question_text)
     elif answer_type == 'top_answer':
         return srdResponder.top_answer_in_context(question_text)
+    elif answer_type == 'top_5_answer':
+        return srdResponder.top_answer_in_context(question_text, top_5=True)
     else:
         raise ValueError("Unrecognized answer_type '{}'.".format(answer_type))
 

@@ -8,7 +8,7 @@ from evaluation.config import benchmark_filename
 from evaluation.config import data_filepath
 from evaluation.create_benchmark import fix_filename
 
-def get_questions_from_squad(benchmark_filepath):
+def get_questions_from_squad(benchmark_filepath, with_answers=False):
     '''From the path to and name of the json file holding a SQuAD dataset,
     create a list of (question, question-id) tuples.
 
@@ -23,7 +23,10 @@ def get_questions_from_squad(benchmark_filepath):
     for article in squad_benchmark['data']:
         for para in article['paragraphs']:
             for qas in para['qas']:
-                question_id_pairs.append((qas['question'], qas['id']))
+                if with_answers:
+                    question_id_pairs.append((qas['question'], qas['id'], [x['answer_text'] for x in qas['answers']]))
+                else:
+                    question_id_pairs.append((qas['question'], qas['id']))
     return question_id_pairs
 
 def main():

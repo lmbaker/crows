@@ -50,7 +50,7 @@ class SrdResponder:
                                        top_k_retriever=10,
                                        top_k_reader=5)
 
-    def top_answer_in_context(self, question: str) -> str:
+    def top_answer_in_context(self, question: str, top_5: bool=False) -> str:
         '''Return the most likely answer for the given question. Return the
         context, but put the answer in bold.
 
@@ -59,11 +59,22 @@ class SrdResponder:
         '''
 
         prediction = self._make_prediction(question)
-        top_answer_dict = prediction['answers'][0]
-        top_answer_text = top_answer_dict['answer']
-        top_answer_context = top_answer_dict['context']
 
-        return make_substring_bold(top_answer_context, top_answer_text)
+        if not top_5:
+            top_answer_dict = prediction['answers'][0]
+            top_answer_text = top_answer_dict['answer']
+            top_answer_context = top_answer_dict['context']
+
+            return make_substring_bold(top_answer_context, top_answer_text)
+        else:
+            answer_string = ''
+            answers = prediction['answers']
+            for i in range(5):
+                top_answer_text = answers[i]['answer']
+                top_answer_context = answers[i]['context']
+                answer_string += '<br/><br/>Answer {}:'.format(i+1)
+                answer_string += '<br/>' + make_substring_bold(top_answer_context, top_answer_text)
+            return answer_string
 
     def answers_with_metadata(self, question):
         '''Return all answer candidates, with metadata, as provided by the
