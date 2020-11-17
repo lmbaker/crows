@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from haystack import Finder
 from haystack.document_store.elasticsearch import ElasticsearchDocumentStore
 from haystack.reader.farm import FARMReader
+from haystack.retriever.dense import DensePassageRetriever
 from haystack.retriever.sparse import ElasticsearchRetriever
 import json
 
@@ -9,11 +11,25 @@ from questionAnswering.config import generated_srd_filepath, model_name_or_path
 from questionAnswering.utils import make_substring_bold
 
 
+@dataclass
+class SrdResponderConfig:
+
+    # The retriever to use. Should be 'Elasticsearch' or 'DensePassage'.
+    retriever: str
+
+    def __post_init__(self):
+        retrieverOptions = ['Elasticsearch', 'DensePassage']
+        if self.retriever not in retrieverOptions:
+            errorMsg = "Retriever '{}' not recognized. Must be in {}.".format(
+                self.retriever, retrieverOptions)
+            raise ValueError(errorMsg)
+
+
 class SrdResponder:
     '''A class to wrap around the Haystack stack, and provide answers to
     questions with any desired formatting or post-processing.'''
 
-    def __init__(self):
+    def __init__(self, config: SrdResponderConfig):
 
         # Connect to Elasticsearch
 
@@ -31,11 +47,25 @@ class SrdResponder:
         formatted_dicts = [{"name": k, "text": v} for k, v in docs.items()]
         document_store.write_documents(formatted_dicts)
 
-        retriever = ElasticsearchRetriever(document_store=document_store)
+        if config.retriever == 'Elasticsearch':
+            retriever = ElasticsearchRetriever(document_store=document_store)
+
+        elif config.retriever == 'DensePassage':
+            retriever = DensePassageRetriever(
+                document_store=document_store,
+                query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
+                passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
+                max_seq_len_query=64,
+                max_seq_len_passage=256,
+                batch_size=16,
+                use_gpu=True,
+                embed_title=True,
+                use_fast_tokenizers=True)
+
+            document_store.update_embeddings(retriever)
 
         reader = FARMReader(model_name_or_path=model_name_or_path,
                             use_gpu=True)
-
 
         self.finder = Finder(reader, retriever)
 

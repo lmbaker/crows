@@ -1,6 +1,6 @@
 from flask import Flask, request
 
-from questionAnswering.SrdResponder import SrdResponder
+from questionAnswering.SrdResponder import SrdResponder, SrdResponderConfig
 
 app = Flask(__name__)
 
@@ -20,7 +20,8 @@ curl --location --request POST 'http://127.0.0.1:5000/json-question' \
 or, curl --location --request POST 'http://127.0.0.1:5000/json-all-answers
 '''
 
-srdResponder = SrdResponder()
+config = SrdResponderConfig(retriever='DensePassage')
+srdResponder = SrdResponder(config)
 
 
 def answer_question(question_text, answer_type='top_5_answer'):
