@@ -38,14 +38,22 @@ class SrdResponder:
                                                     password="",
                                                     index="document")
 
-        print("Importing documents from '{}'.".format(generated_srd_filepath))
-        # Get documents with knowledge
+        total_docs_in_store = document_store.get_document_count()
 
-        with open(generated_srd_filepath) as f:
-            docs = json.load(f)
+        if total_docs_in_store > 0:
+            # Use document store as-is.
+            print("Using existing document store with {} documents.".format(
+                total_docs_in_store))
 
-        formatted_dicts = [{"name": k, "text": v} for k, v in docs.items()]
-        document_store.write_documents(formatted_dicts)
+        else:
+            # Get documents with knowledge
+            print("Importing documents from '{}'.".format(generated_srd_filepath))
+
+            with open(generated_srd_filepath) as f:
+                docs = json.load(f)
+
+            formatted_dicts = [{"name": k, "text": v} for k, v in docs.items()]
+            document_store.write_documents(formatted_dicts)
 
         if config.retriever == 'Elasticsearch':
             retriever = ElasticsearchRetriever(document_store=document_store)
@@ -62,7 +70,10 @@ class SrdResponder:
                 embed_title=True,
                 use_fast_tokenizers=True)
 
-            document_store.update_embeddings(retriever)
+            if total_docs_in_store == 0:
+                # Assume that if we are re-using a document store, it has the
+                # embeddings we want.
+                document_store.update_embeddings(retriever)
 
         reader = FARMReader(model_name_or_path=model_name_or_path,
                             use_gpu=True)
