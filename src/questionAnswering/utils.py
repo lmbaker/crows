@@ -1,3 +1,6 @@
+import os
+
+
 def make_substring_bold(full_string, substring):
     '''Given a string and a substring from this string, return the string with
     bold formatting (by HTML tags) applied to the substring.
@@ -19,3 +22,16 @@ def make_substring_bold(full_string, substring):
     string_end = full_string[substring_start_idx + len(substring):]
 
     return string_beginning + '<b>' + substring + '</b>' + string_end
+
+
+def create_absolute_path(script_dir, other_path):
+    """
+    script_dir is the result of os.dirname(__file__) in the script using the
+    file.
+    other_path should be a path relative to the root directory of this
+    repository.
+    """
+    relative_path = os.path.join(script_dir,
+                                 '..{}..'.format(os.sep),
+                                 other_path)
+    return os.path.abspath(relative_path)

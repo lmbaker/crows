@@ -3,21 +3,23 @@ import os
 
 from evaluation.config import data_filepath, benchmark_filename
 from evaluation.create_eval_file import get_questions_from_squad
-
 from prediction.prediction_format import PredictionOutput
+from questionAnswering.utils import create_absolute_path
 
 # Make a dict where the keys are questions (as question text) and the values
 # are the answers. Since the SQuAD eval script saves answers matched to
 # question hashes, this is a nice utility script to have.
 
+abs_data_filepath = create_absolute_path(
+    os.path.dirname(__file__), data_filepath)
 
 question_id_pairs = get_questions_from_squad(
-    os.path.join(data_filepath, benchmark_filename),
+    os.path.join(abs_data_filepath, benchmark_filename),
     with_answers=True)
 
 question_answer_dict = {}
 
-with open(os.path.join(data_filepath, 'benchmark_predictions_model_roberta-base-squad2-v2.json')) as f:
+with open(os.path.join(abs_data_filepath, 'benchmark_predictions_model_roberta-base-squad2-v2.json')) as f:
     id_answer_pairs = json.load(f)
 
 for qid_pair in question_id_pairs:

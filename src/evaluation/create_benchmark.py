@@ -2,6 +2,8 @@ import os
 import json
 
 from evaluation.config import data_filepath
+from questionAnswering.utils import create_absolute_path
+
 
 def convert_txt_to_squad_json(documents_dir, filename):
     '''Read an article given as a .txt file, and create a SQuAD json file,
@@ -25,6 +27,7 @@ def convert_txt_to_squad_json(documents_dir, filename):
 
     with open(os.path.join(documents_dir, title + '.json'), 'w') as f:
         json.dump(squad_data, f)
+
 
 def convert_articles_json_to_squad_json(documents_dir, filename):
     '''Read a dict of (title, text) pairs and create a SQuAD json file,
@@ -80,6 +83,7 @@ def fix_filename(file_dir, filename):
         unique_suffix += 1
     return filename_no_extension + str(unique_suffix) + file_extension
 
+
 def find_sentence(sentence, squad_data, article_title=''):
     '''Find the given sentence in a squad data file.
 
@@ -121,6 +125,7 @@ def find_sentence(sentence, squad_data, article_title=''):
 
     return paragraphs_matching_sentence[0], paragraph_article_titles[0]
 
+
 def add_question(question, answers, paragraph_dict, article_title):
     '''Add a question to the given paragraph.
 
@@ -152,7 +157,7 @@ def add_question(question, answers, paragraph_dict, article_title):
             raise ValueError(msg.format(answer_text, answer_start))
 
         answer_in_para = paragraph_dict['context'][
-            answer_start : answer_start + len(answer_text)]
+            answer_start: answer_start + len(answer_text)]
 
         if answer_text != answer_in_para:
             msg = ("Answer '{}' doesn't match '{}' in paragraph"
@@ -168,6 +173,7 @@ def add_question(question, answers, paragraph_dict, article_title):
 
     paragraph_dict['qas'].append(question_dict)
 
+
 def json_from_filename(documents_dir, file_title):
     '''Read in json data from a json file.
     documents_dir: str The path to the directory containing the file.
@@ -180,6 +186,7 @@ def json_from_filename(documents_dir, file_title):
     with open(os.path.join(documents_dir, filename)) as f:
         starting_squad_data = json.load(f)
     return starting_squad_data
+
 
 def combine_squad_files(file1, file2):
     '''Add the articles in file2 to file1. Both files are in SQuAD format.
@@ -196,7 +203,8 @@ def combine_squad_files(file1, file2):
         else:
             file1['data'].append(article)
 
-documents_dir = data_filepath
+
+documents_dir = create_absolute_path(os.path.dirname(__file__), data_filepath)
 
 '''
 for filename in ['races.txt', 'barbarian.txt', 'bard.txt', 'cleric.txt']:
@@ -361,5 +369,3 @@ if __name__ == '__main__':
         json.dump(starting_squad_data, f)
 
     print("Benchmark written to '{}'.".format(non_overwrite_filepath))
-
-

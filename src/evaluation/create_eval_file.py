@@ -7,6 +7,7 @@ from tqdm import tqdm
 from evaluation.config import benchmark_filename
 from evaluation.config import data_filepath
 from evaluation.create_benchmark import fix_filename
+from questionAnswering.utils import create_absolute_path
 
 def get_questions_from_squad(benchmark_filepath, with_answers=False):
     '''From the path to and name of the json file holding a SQuAD dataset,
@@ -31,8 +32,11 @@ def get_questions_from_squad(benchmark_filepath, with_answers=False):
 
 def main():
 
+    abs_data_filepath = create_absolute_path(
+        os.path.dirname(__file__), data_filepath)
+
     question_id_pairs = get_questions_from_squad(
-        os.path.join(data_filepath, benchmark_filename))
+        os.path.join(abs_data_filepath, benchmark_filename))
 
 
     # curl --location --request POST  \
@@ -58,8 +62,8 @@ def main():
                   'or {:.2f} hours.')
     print(timing_msg.format(duration, duration/3600))
 
-    predictions_filename = os.path.join(data_filepath,
-                                        fix_filename(data_filepath,
+    predictions_filename = os.path.join(abs_data_filepath,
+                                        fix_filename(abs_data_filepath,
                                                      'benchmark_predictions.json'))
 
     with open(predictions_filename, 'w') as f:
