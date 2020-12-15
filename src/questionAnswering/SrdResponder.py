@@ -113,7 +113,7 @@ class SrdResponder:
             for i in range(5):
                 top_answer_text = answers[i]['answer']
                 top_answer_context = answers[i]['context']
-                answer_string += '<br/><br/>Answer {}:'.format(i+1)
+                answer_string += '<br/><br/>Answer {}, from article <i>{}</i>:'.format(i+1, answers[i]['meta']['name'])
                 answer_string += '<br/>' + make_substring_bold(top_answer_context, top_answer_text)
             return answer_string
 

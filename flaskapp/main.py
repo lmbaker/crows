@@ -20,7 +20,8 @@ curl --location --request POST 'http://127.0.0.1:5000/json-question' \
 or, curl --location --request POST 'http://127.0.0.1:5000/json-all-answers
 '''
 
-config = SrdResponderConfig(retriever='DensePassage')
+#config = SrdResponderConfig(retriever='DensePassage')
+config = SrdResponderConfig(retriever='Elasticsearch')
 srdResponder = SrdResponder(config)
 
 
@@ -42,11 +43,6 @@ quick_template = '''Question: {}</br>
                   Answers:</br>{}'''
 
 
-@app.route('/<string:greeting>')
-def hello_world(greeting):
-    return 'Hello, World!' + '\n' + greeting
-
-
 @app.route('/form-question', methods=['GET', 'POST'])
 def form_example():
     if request.method == 'POST':
@@ -62,24 +58,37 @@ def form_example():
               </form>'''
 
 
-@app.route('/json-question', methods=['POST'])
-def json_example():
+def json_route_helper(request, answer_mode: str):
     request_data = request.get_json()
 
     question = request_data['question']
-    answer = answer_question(question)
+    answer = answer_question(question, answer_type = answer_mode)
+    return answer
+
+
+@app.route('/json-question', methods=['POST'])
+def json_example():
+    request_data = request.get_json()
+    question = request_data['question']
+    answer = json_route_helper(request, 'top_answer')
 
     return {'question': question,
             'answer': answer}
 
+
 @app.route('/json-all-answers', methods=['POST'])
 def json_all_answers():
-    request_data = request.get_json()
-
-    question = request_data['question']
-    answer = answer_question(question, answer_type = 'all_answers')
-
+    answer = json_route_helper(request, 'all_answers')
     return answer
+
+
+@app.route('/json-answers-in-context', methods=['POST'])
+def json_answers_in_context():
+    request_data = request.get_json()
+    question = request_data['question']
+    answer = answer_question(question, answer_type = 'top_5_answer')
+    return answer
+
 
 @app.route('/answer-with-metadata', methods=['POST'])
 def answer_with_metadata():
