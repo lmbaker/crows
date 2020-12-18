@@ -7,6 +7,6 @@ setup(name='srdAnswer',
       scripts=['bin/generate_articles.py'],
       install_requires=[
           'flask',
-          'farm-haystack',
+          'farm-haystack==0.5.0',
       ]
       )
