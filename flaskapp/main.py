@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, Markup, render_template, request
 
 from questionAnswering.SrdResponder import SrdResponder, SrdResponderConfig
 
@@ -50,12 +50,8 @@ def form_example():
         question = request.form.get('question')
         answer = answer_question(question)
 
-        return quick_template.format(question, answer)
-
-    return '''<form method="POST">
-                  Question: <input type="text" name="question"><br>
-                  <input type="submit" value="Submit"><br>
-              </form>'''
+        return render_template("index.html", answer=Markup(answer))
+    return render_template("index.html", answer='')
 
 
 def json_route_helper(request, answer_mode: str):
