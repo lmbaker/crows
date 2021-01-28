@@ -21,8 +21,8 @@ or, curl --location --request POST 'http://127.0.0.1:5000/json-all-answers
 '''
 
 #config = SrdResponderConfig(retriever='DensePassage')
-config = SrdResponderConfig(retriever='Elasticsearch')
-srdResponder = SrdResponder(config)
+#config = SrdResponderConfig(retriever='Elasticsearch')
+#srdResponder = SrdResponder(config)
 
 
 def answer_question(question_text, answer_type='top_5_answer'):
@@ -48,7 +48,9 @@ def form_example():
     if request.method == 'POST':
         # The form has been submitted.
         question = request.form.get('question')
-        answer = answer_question(question)
+        #answer = answer_question(question)
+
+        answer = "<br/><br/>Answer 1, from article <i>Gnome</i>:<br/>sters among them are more playful than vicious. Size. Gnomes are <b>between 3 and 4 feet</b> tall and average about 40 pounds. Your size is Small. Speed. You<br/><br/>Answer 2, from article <i>Reincarnate</i>:<br/> 25 Elf, dark 26 – 34 Elf, high 35 – 42 Elf, wood 43 – 46 Gnome, forest <b>47 – 52</b> Gnome, rock 53 – 56 Half-elf 57 – 60 Half-orc 61 – 68 Halfling, lightf<br/><br/>Answer 3, from article <i>Gnome, Deep (Svirfneblin)</i>:<br/> , disguise self Actions War Pick. Melee Weapon Attack: +4 to hit, reach <b>5 ft</b>., one target. Hit: 6 (1d8 + 2) piercing damage. Poisoned Dart. Ranged We<br/><br/>Answer 4, from article <i>Sleet Storm</i>:<br/> up to 1 minute Until the spell ends, freezing rain and sleet fall in a <b>20-foot</b>-tall cylinder with a 40-foot radius centered on a point you choose wit<br/><br/>Answer 5, from article <i>Passwall</i>:<br/>r the duration. You choose the opening’s dimensions: up to 5 feet wide, <b>8 feet</b> tall, and 20 feet deep. The passage creates no instability in a structu"
 
         return render_template("index.html", answer=Markup(answer))
     return render_template("index.html", answer='')
