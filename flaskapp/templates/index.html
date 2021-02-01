@@ -22,26 +22,34 @@ body, h1, h2, h3, h4, h5, h6 {
     <div class="flex-container-inner">
     
     
-    <div>CROWS (Curated Responses on Written Standards) is an <i>automated question answering service for the fifth edition of the world&#8217;s first tabletop RPG.</i><br/>
+    <div><p style="font-size:large">CROWS (Curated Responses on Written Standards) is an <i>automated question answering service for the fifth edition of the world&#8217;s first tabletop RPG.</i></p>
     It can answer questions on the content in the <a href="https://media.wizards.com/2016/downloads/DND/SRD-OGL_V5.1.pdf" target="_blank">Standard Reference Document</a>. CROWS only knows about material in this document, not all content published for the fifth edition. As a rule of thumb, stick to the three main rule books.
 <br/>
 CROWS is a small project, and can&#8217;t answer every question perfectly; it does best with simple trivia-style questions.
 <br/>
+<br/>
+<b>Interpreting answers:</b>
+CROWS provides the top five answers for each question, where "answer 1" is the answer it has the most confidence in, and so on.
+The text in bold is the phrase picked as the answer, and the surrounding text is provided for context.
+The italicised titles correspond to sections of the SRD, linked above.
 </div>
     <div><img src="{{ url_for('static', filename='img/crowgo.png') }}" alt="A logo of a crow behind a game master screen" height="100" width="100" /></div>
 </div>
 <br/>
 {{ answer }}
-Try your question here:
+<b>Try your question here:</b>
 <form method="POST">
 	Question: <input type="text" name="question"><br/>
 	<input type="submit" value="Submit"><br/>
 </form>
 <br/>
 <p>Want to help improve this project? Hold on to the question you asked,
-and submit it <a href="https://docs.google.com/forms/d/e/1FAIpQLSej_YJepaNpK6wjyznTkLkV1Nr5KR7xjyYmDSJ7jBy9dFkSGw/viewform?usp=sf_link" target="_blank">here</a>.</p>
-<br/>
-Want to find out more about this project? Check out the source code here <link>.
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSej_YJepaNpK6wjyznTkLkV1Nr5KR7xjyYmDSJ7jBy9dFkSGw/viewform?usp=sf_link" target="_blank">and submit it here</a>.</p>
+<p>Want to find out more about this project? <a href="https://github.com/lmbaker/crows" target="_blank">Check out the source code</a>.</p>
+
+<h4>Acknowledgements</h4>
+<p>Thank you to <a href="https://www.appliedinvention.com/" target="_blank">Applied Invention</a> for providing time, resources, and expertise for this project.</p>
+<p> Thank you to TheCuriousWorlds (<a href="https://instagram.com/thecuriousworlds">Instagram</a>) for creating the logo for this project.</p>
 
 <h4>License</h4>
 The answers provided by this service are composed of text from the Standard Reference Document, which is content provided under the Open Game License.

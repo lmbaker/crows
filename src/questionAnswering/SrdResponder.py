@@ -115,15 +115,16 @@ class SrdResponder:
         '''
 
         prediction = self._make_prediction(question)
+        answer_string = '<p>'
 
         if not top_5:
             top_answer_dict = prediction['answers'][0]
             top_answer_text = top_answer_dict['answer']
             top_answer_context = top_answer_dict['context']
 
-            return make_substring_bold(top_answer_context, top_answer_text)
+            answer_string += make_substring_bold(top_answer_context, top_answer_text)
         else:
-            answer_string = '<p>'
+            answer_string += 'Question: {}'.format(question)
             answer_header_template = ('<br/><br/>Answer {}, '
                                       'from article <i>{}</i>:')
             answers = prediction['answers']
@@ -134,8 +135,8 @@ class SrdResponder:
                     i+1, answers[i]['meta']['name'])
                 answer_string += '<br/>' + make_substring_bold(
                     top_answer_context, top_answer_text)
-            answer_string += '</p>'
-            return answer_string
+        answer_string += '</p>'
+        return answer_string
 
     def answers_with_metadata(self, question):
         '''Return all answer candidates, with metadata, as provided by the
