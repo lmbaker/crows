@@ -123,7 +123,7 @@ class SrdResponder:
 
             return make_substring_bold(top_answer_context, top_answer_text)
         else:
-            answer_string = ''
+            answer_string = '<p>'
             answer_header_template = ('<br/><br/>Answer {}, '
                                       'from article <i>{}</i>:')
             answers = prediction['answers']
@@ -134,6 +134,7 @@ class SrdResponder:
                     i+1, answers[i]['meta']['name'])
                 answer_string += '<br/>' + make_substring_bold(
                     top_answer_context, top_answer_text)
+            answer_string += '</p>'
             return answer_string
 
     def answers_with_metadata(self, question):
