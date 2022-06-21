@@ -2,7 +2,7 @@
 
 This repository has tools for answering questions about the content for the fifth edition of the world's first tabletop RPG that has been released under the Open Gaming License.
 
-To test this out online, visit <website>. (NB: This is a small server, and can only handle a few requests at a time.)
+<!-- To test this out online, visit <website>. (NB: This is a small server, and can only handle a few requests at a time.) -->
 
 To try this out on your machine, clone the repository and follow these steps:
 
